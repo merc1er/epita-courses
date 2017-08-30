@@ -13,3 +13,6 @@ EPITA computer architecture courses
   - [examinations](https://github.com/BUYMERCIER/computer-architecture-courses/tree/master/S3/examinations)
   - [lectures](https://github.com/BUYMERCIER/computer-architecture-courses/tree/master/S3/lectures)
   - [tutorials](https://github.com/BUYMERCIER/computer-architecture-courses/tree/master/S3/tutorials)
+
+EPITA Mathematics full course (S1 - S2)
+- [pdf file](http://buymercier.free.fr/mathcourse.pdf)
