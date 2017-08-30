@@ -16,3 +16,6 @@ EPITA computer architecture courses
 
 EPITA Mathematics full course (S1 - S2)
 - [pdf file](http://buymercier.free.fr/mathcourse.pdf)
+- Examinations
+  - S1
+  - [S2](http://buymercier.free.fr/epita/finals_math/2016.pdf]
