@@ -60,7 +60,7 @@
 	We have two languages L1 and L2:
 	L1 . L2 = {u . v | u ϵ L1 and v ϵ L2}
 
-	|L| = the number of words in L. :warning: It can be infinity
+	|L| = the number of words in L. ⚠️ It can be infinity
 
 	L.L = L²
 
