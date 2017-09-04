@@ -22,6 +22,8 @@
 
 # Seminar 
 
+[Full course in French](https://www.lrde.epita.fr/~akim/thlr/lecture-notes/theorie-des-langages-rationnels.pdf)
+
 ## Basic Definitions
 
 	Alphabet: finite set of letters
