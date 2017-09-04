@@ -48,9 +48,9 @@
 
 ## Advanced Definitions
 
-	u is a prefix of v if there exists ```w . v = u . w```.
-	u is a suffix of v if there exists ```w . v = w . u```.
-	u is an infix of v if there exists ```w . x . v = w . u . x```.
+	u is a prefix of v if there exists **w . v = u . w**.
+	u is a suffix of v if there exists **w . v = w . u**.
+	u is an infix of v if there exists **w . x . v = w . u . x**.
 
 	We have two words u and v (u = u0, u1, ..., un):
 	if u0 < v0 then u < v
@@ -90,5 +90,3 @@
 
 
 
-
- 
