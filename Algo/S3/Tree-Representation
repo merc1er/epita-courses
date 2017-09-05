@@ -1,0 +1,213 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Sep 23 15:42:11 2016
+
+@author: Nathalie
+"""
+
+from AlgoPy import tree
+from AlgoPy.tree import Tree
+from AlgoPy import treeAsBin
+from AlgoPy.treeAsBin import TreeAsBin
+
+T = tree.tutoEx1()
+B = treeAsBin.tutoEx1()
+
+
+'''
+ex3.1: tree -> prefix-suffix vector
+'''
+
+def prefSuff(T, L=[]):
+    L.append(T.key)
+    for child in T.children:
+        prefSuff(child, L)
+    L.append(T.key)
+    return L
+
+
+def prefSuffTAB(B, L=[]):
+    L.append(B.key)
+    child = B.child
+    while child:
+        prefSuffTAB(child)
+        child = child.sibling
+    L.append(B.key)
+    return L
+
+def prefSuffTAB2(B, L=[]):
+    L.append(B.key)
+    if B.child != None:
+        prefSuffTAB2(B.child, L)
+    L.append(B.key)
+    if B.sibling != None:
+        prefSuffTAB2(B.sibling, L)
+    return L
+    
+'''
+ex3.2: tree -> parent vector
+'''
+
+def parent(T, P):
+    for child in T.children:
+        P[child.key] = T.key
+        parent(child, P)
+    
+def buildParent(T):
+    P = [None]*tree.size(T)
+    P[T.key] = -1
+    parent(T, P)
+    return P
+
+
+def parentTAB(B, P):
+    child = B.child
+    while child:
+        P[child.key] = B.key
+        parentTAB(child, P)
+        child = child.sibling
+    
+def buildParentTAB(B):
+    P = [None]*treeAsBin.size(B)
+    P[B.key] = -1
+    parentTAB(B, P)
+    return P
+    
+'''
+ex3.3: conversion
+'''
+
+# binary rep. -> classic tree
+def TABtoTree(B):
+    T = Tree(B.key)
+    Bchild = B.child
+    #T.children = []     # useless
+    while Bchild:
+        T.children.append(TABtoTree(Bchild))
+        Bchild = Bchild.sibling
+    return T
+    
+# binary rep. -> classic tree using binary structure
+    
+def __TABtoTree2(B, parent):
+    '''
+    convert B -> added as new child of parent
+    '''
+    newChild = Tree(B.key)
+    parent.children.append(newChild)
+    if B.sibling:
+        __TABtoTree2(B.sibling, parent)
+    if B.child:
+        __TABtoTree2(B.child, newChild)
+
+def TABtoTree2(B):
+    T = Tree(B.key)
+    __TABtoTree2(B.child, T)
+    return T
+
+
+# classic tree  ->  binary rep.
+
+def treeToTAB(T):
+    B = TreeAsBin(T.key, None, None)    
+    if T.children != []:
+        B.child = treeToTAB(T.children[0])
+        Bchild = B.child
+        for i in range(1, T.nbChildren):
+            Bchild.sibling = treeToTAB(T.children[i])
+            Bchild = Bchild.sibling
+    return B
+
+# same with insertion "at the head"
+def treeToTAB2(T):
+    B = TreeAsBin(T.key, None, None)    
+    for i in range(T.nbChildren-1, -1, -1):
+        new = treeToTAB2(T.children[i])
+        new.sibling = B.child
+        B.child = new
+    return B
+
+
+    
+# classic tree -> binary rep. using binary structure
+def __treeToTAB(parent, i):
+    '''
+    build child #i of parent
+    '''
+    if i == parent.nbChildren:
+        return None
+    else:
+        child_i = TreeAsBin(parent.children[i].key)
+        child_i.sibling = __treeToTAB(parent, i+1)
+        child_i.child = __treeToTAB(parent.children[i], 0)
+        return child_i
+    
+def treeToTAB3(T):
+    return TreeAsBin(T.key, __treeToTAB(T, 0), None)
+
+
+'''
+ex3.4: tree -> list
+'''
+
+def treeToList(T):
+    s = '(' + str(T.key)
+    for child in T.children:
+        s += treeToList(child)
+    s += ')'
+    return s
+
+def treeToListTAB(B):
+    s = '(' + str(B.key)
+    child = B.child
+    while child:
+        s += treeToListTAB(child)
+        child = child.sibling
+    s += ')'
+    return s
+
+
+'''
+ex3.4: list -> tree (result has str keys)
+'''
+
+# remain the pb of non mutable int: 
+# => the function returns the pair (i, tree)...
+def __fromList(s, i=0): 
+    if i < len(s) and s[i] == '(':   # this test can be removed!
+        i = i + 1 # to pass the '('
+        T = Tree()
+        T.key = ""
+        while not (s[i] in "()"):
+            T.key = T.key + s[i]
+            i += 1
+        T.children = []
+        while s[i] != ')':
+            (C, i) = __fromList(s, i)
+            T.children.append(C)
+        i = i + 1   # to pass the ')'
+        return (T, i)
+    else:
+        return None
+
+def fromList(L):
+    (T, _) = __fromList(L)
+    return T
+
+# list -> binary rep.
+def fromListTAB(s, i=0): 
+    if i < len(s) and s[i] == '(':   # can this test be removed?
+        i = i + 1 # to pass the '('
+        B = Tree(key = "") 
+        while not (s[i] in "()"):
+            B.key = B.key + s[i]
+            i += 1
+        B.child = fromListTAB(s, i)
+        i = i + 1   # to pass the ')'
+        B.sibling = fromListTAB(s, i)
+        return B
+    else:
+        return None
+
+
+

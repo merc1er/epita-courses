@@ -1,0 +1,345 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Oct  5 16:48:50 2016
+@author: Nathalie & gd
+"""
+
+from AlgoPy import bTree
+from AlgoPy.bTree import BTree
+
+
+#â˜º examples
+
+# first in tutorial, degree = 3
+s0 = "(<20>(<8,15>(<1,2,3,4,5>)(<9,13>)(<16,17,18,19>))(<26,42,53>(<21,25>)(<27,34,35,41>)(<43,48,51,52>)(<62,65,77>)))"
+B0 = bTree.fromList(s0, 3)
+
+
+# ex 1.4 q2, degree = 2
+s1 = "(<13,32,44>(<3>)(<18,25>)(<35,40>)(<46,49,50>))"
+B1 = bTree.fromList(s1, 2)
+
+
+# second in tutorial, ex 1.4 q1 degree = 2
+s2 = "(<22>(<15>(<8,12>)(<18,19,20>))(<27,41>(<24,25>)(<30,35,38>)(<45,48>)))"
+B2 = bTree.fromList(s2, 2)
+
+
+# 2.1: min and mx
+
+def minBTree(B):
+    '''
+    B is not empty
+    '''
+    while B.children != []:
+        B = B.children[0]
+    return B.keys[0]
+    
+
+def maxBTree(B):
+    while B.children:
+        B = B.children[-1]  # B.children[B.nbKeys]
+    return B.keys[-1]   # B.keys[B.nbKeys-1]
+    
+# 2.2: Searching
+
+
+def __binarySearchPos(L, x, left, right):
+    """
+    returns the position where x is or might be
+    """
+    if right <= left:
+        return right
+    mid = left + (right-left)//2
+    if L[mid] == x:
+        return mid
+    elif x < L[mid]:
+        return __binarySearchPos(L, x, left, mid)
+    else:
+        return __binarySearchPos(L, x, mid+1, right)    
+
+def binarySearchPos(L, x):
+    return __binarySearchPos(L, x, 0, len(L))
+    
+def _searchBTree(B, x):                                       
+    i = binarySearchPos(B.keys, x)
+    if i < B.nbKeys and B.keys[i] == x:
+        return (B, i)
+    else:
+        if B.children == []:
+            return None
+        else:
+            return _searchBTree(B.children[i], x)
+        
+def searchBTree(B, x):
+    if B == None:
+        return None
+    else:
+        return _searchBTree(B,x)
+    
+# 2.3 insertion
+
+def split(B, i):
+    '''
+    splits the child i of B
+    conditions:
+    - B is a nonempty tree and its root is not a 2t-node.
+    - The child i of B exists and its root is a 2t-node.
+    '''
+    mid = B.degree-1
+    L = B.children[i]
+    R = BTree()
+    # keys
+    (L.keys, x, R.keys) = (L.keys[:mid], L.keys[mid], L.keys[mid+1:])
+    # children    
+    if L.children == []:
+        R.children = [] # useless L[:2] = [] if L is []!
+    else:   
+        (L.children, R.children) = (L.children[:mid+1], L.children[mid+1:])
+    # root            
+    B.keys.insert(i, x)
+    B.children.insert(i+1, R)
+
+# split test
+def splitTest():
+    s = "(<8,18>(<1,4,5>)(<9,10,11,12,13>)(<19, 23>))"
+    B = bTree.fromList(s, 3)
+    BtreeToDot.viewBTree(B)
+    split(B, 1)
+    BtreeToDot.viewBTree(B)
+
+def __insert(B, x):
+    i = binarySearchPos(B.keys, x)
+    if i < B.nbKeys and B.keys[i] == x:
+        return False
+    elif B.children == []: # leaf
+        B.keys.insert(i, x)
+        return True
+    else:
+        if B.children[i].nbKeys == 2 * B.degree - 1:
+            if B.children[i].keys[B.degree-1] == x:
+                return False
+            split(B, i)
+            if x > B.keys[i]:
+                i += 1
+        return __insert(B.children[i], x)
+        
+def insert(B, x):
+    if B ==  None:        
+        return BTree([x])
+    else:
+        if B.nbKeys == 2 * B.degree - 1:    # root split
+            B = BTree([], [B])
+            split(B, 0)
+        __insert(B, x)
+        return B
+        
+# insertion test
+import BtreeToDot
+import IPython
+
+def buildBTreeFromList(L, degree, display = True):
+    '''
+    build a b-tree: inserts all L elements
+    display the tree after each insertion
+    '''
+    BTree.degree = degree
+    B = None
+    for x in L:        
+        B = insert(B, x)        
+        if display :
+            print('+', x)
+            BtreeToDot.viewBTree(B)
+            input()
+    return B
+
+from random import randint
+def buildTest(n, degree):
+    '''
+    build a random b-tree of n values with given degree 
+    '''
+    L = [randint(0, n*5) for i in range(n)]    
+    B = buildBTreeFromList(L, degree)
+    print(bTree.isBtree(B))
+    L.sort()
+    print(L)
+    print(bTree.toList(B))
+    return B
+
+#-------------------------------------------------------------------------
+# rotations (generalized)
+
+def leftRotation(B, i):
+    '''
+    makes a rotation from child i+1 to child i
+    Conditions: 
+    - the tree B exists, 
+    - its child i exists and its root is not a 2t-node, 
+    - its child i+1 exists and its root is not a t-node.
+    '''
+    L = B.children[i]
+    R = B.children[i+1]
+
+    L.keys.append(B.keys[i])
+    B.keys[i] = R.keys.pop(0)
+    if R.children:
+        L.children.append(R.children.pop(0))
+
+
+def rightRotation(B, i):
+    '''
+    makes a rotation from child i-1 to child i
+    Conditions: 
+    - the tree B exists, 
+    - its child i exists and its root is not a 2t-node, 
+    - its child i-1 exists and its root is not a t-node.
+    '''
+    L = B.children[i-1]
+    R = B.children[i]
+
+    R.keys.insert(0, B.keys[i-1])
+    B.keys[i-1] = L.keys.pop()
+    if L.children:
+        R.children.insert(0, L.children.pop())
+        
+def rotationsTests():
+    s = "(<8,18>(<1,4,5>)(<9,10,11,12,13>)(<19, 23>))"
+    B = bTree.fromList(s, 3)
+    BtreeToDot.viewBTree(B)
+    leftRotation(B,0)
+    print("after left rotation")
+    BtreeToDot.viewBTree(B)
+    rightRotation(B,2)
+    print("after right rotation")
+    BtreeToDot.viewBTree(B)
+
+#------------------------------------------------------------------------------
+# merge
+def merge(B, i):
+    '''
+    merge B children i and i+1 into child i
+    Conditions: 
+    - the tree B exists and its root is not a t-node,
+    - children i and i+1 exist and their roots are t-nodes.
+    '''
+    L = B.children[i]
+    R = B.children.pop(i+1) #B.children[i+1]
+    L.keys.append(B.keys.pop(i))
+    L.keys += R.keys
+    L.children += R.children
+
+def mergeSplitTest():
+    s = "(<8,11,18>(<1,4,5>)(<9,10>)(<12,13>)(<19,23>))"
+    B = bTree.fromList(s, 3)
+    BtreeToDot.viewBTree(B)    
+    merge(B, 1)
+    print("after merge children 1 and 2")
+    BtreeToDot.viewBTree(B)
+    split(B, 1)
+    print("after split child 1")
+    BtreeToDot.viewBTree(B)
+    merge(B, 2)
+    print("after merge children 2 and 3")
+    BtreeToDot.viewBTree(B)
+
+#-------------------------- delete --------------------------------------------
+def __delete(B, x):
+    i = binarySearchPos(B.keys, x)
+    if B.children:
+        if i < B.nbKeys and x == B.keys[i]:
+            if B.children[i].nbKeys > B.children[i+1].nbKeys:
+                B.keys[i] = maxBTree(B.children[i])
+                __delete(B.children[i], B.keys[i])
+            elif B.children[i+1].nbKeys > BTree.degree - 1:
+                B.keys[i] = minBTree(B.children[i+1])
+                __delete(B.children[i+1], B.keys[i])
+            else:
+                merge(B, i)
+                __delete(B.children[i], x)
+        else:
+            if B.children[i].nbKeys == BTree.degree - 1:
+                if i > 0 and B.children[i-1].nbKeys > BTree.degree - 1:
+                    rightRotation(B, i)
+                elif i < B.nbKeys and B.children[i+1].nbKeys > BTree.degree - 1:
+                    leftRotation(B, i)
+                else:
+                    if i == B.nbKeys:
+                        i -= 1
+                    merge(B, i)
+            __delete(B.children[i], x)
+    else:
+        if i < B.nbKeys and x == B.keys[i]:
+            B.keys.pop(i)
+
+def delete(B, x):
+    if B != None:
+        __delete(B, x)
+        if B.nbKeys > 0:
+            return B
+        elif B.children:
+            return B.children[0]
+    return None
+
+#---------------------------- alea deletion tests --------------------------
+def delTest(n, degree, display = True):
+    '''
+    build a random b-tree of n values with given degree
+    then delete all values!
+    '''
+    L = [randint(0, n*5) for i in range(n)]    
+    B = buildBTreeFromList(L, degree, display = False)
+    BtreeToDot.viewBTree(B)
+    for x in L:
+        B = delete(B, x)
+        if display:
+            print('-', x)
+            BtreeToDot.viewBTree(B)
+            input()
+    
+#------------------------------------------------------------------------------
+#
+#                   BONUS
+
+def __insert2(B, x):
+    i = binarySearchPos(B.keys, x)
+    if i < B.nbKeys and B.keys[i] == x:
+        return False
+    elif B.children == []: # leaf
+        B.keys.insert(i, x)
+        return True
+    else:
+        maxK = 2 * B.degree - 1
+        if B.children[i].nbKeys == maxK:
+            if i < B.nbKeys and ((B.children[i+1].nbKeys < maxK and x < B.children[i].keys[B.children[i].nbKeys-1]) \
+                                    or B.children[i+1].nbKeys < maxK-1):
+                rightRotation(B, i+1)
+                if x > B.keys[i]:
+                    i = i + 1
+            elif i > 0 and ((B.children[i-1].nbKeys < maxK and x > B.children[i].keys[0]) \
+                            or B.children[i-1].nbKeys < maxK - 1):
+                leftRotation(B, i-1)
+                if x <= B.keys[i-1]:
+                    i = i - 1            
+            else:
+                if B.children[i].keys[B.degree-1] == x:
+                    return False
+                split(B, i)
+                if x > B.keys[i]:
+                    i += 1
+        if i < B.nbKeys and B.keys[i] == x:
+            return False
+        else:
+            return __insert2(B.children[i], x)
+
+
+
+def insert2(B, x):
+    if B ==  None:        
+        return BTree([x])
+    else:
+        if B.nbKeys == 2 * B.degree - 1:    # root split
+            B = BTree([], [B])
+            split(B, 0)
+        __insert2(B, x)
+        return B
+    

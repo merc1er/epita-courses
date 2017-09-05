@@ -1,0 +1,158 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Sep 23 15:42:11 2016
+
+@author: Nathalie
+"""
+
+from AlgoPy import tree
+from AlgoPy import treeAsBin
+
+from AlgoPy import queue
+from AlgoPy.queue import Queue
+
+
+T = tree.tutoEx1()
+B = treeAsBin.tutoEx1()
+
+
+'''
+Depth traversals with "classic" representation
+'''
+
+def depth(T):
+    # Print keys in prefix order
+    print(T.key, end=' ')
+    for child in T.children:    
+        depth(child)
+    # Print keys in suffix order
+    # print(T.key, end=' ')
+    
+def depthFull(T):
+    # Print keys in prefix order
+    print(T.key, end=' ')
+    if T.children != []:
+        for i in range(T.nbChildren-1):
+            depthFull(T.children[i])
+            #intermediate
+            print(',', end = ' ')
+        depthFull(T.children[T.nbChildren-1]) #last child
+    # Print keys in suffix order
+    # print(T.key, end=' ')
+
+'''
+Depth traversals with "binary" representation
+'''
+
+def depthTAB(B):
+    # Print keys in prefix order
+    print(B.key, end=' ')
+    child = B.child
+    while child:
+        depthTAB(child)
+        child = child.sibling
+    # Print keys in suffix order
+    # print(B.key, end=' ')
+
+def depthFullTAB(B):
+    # Print keys in prefix order
+    print(B.key, end=' ')
+    if B.child != None:
+        child = B.child
+        while child.sibling:
+            depthFullTAB(child)
+            #intermediate
+            print(',', end = ' ')
+            child = child.sibling
+        depthFullTAB(child) #last child
+    # Print keys in suffix order
+    # print(B.key, end=' ')
+
+# using the binary structure
+def depthTAB2(B):
+        if B:
+            # Print keys in prefix order
+            print(B.key, end=' ')
+            depthTAB2(B.child)
+            # Print keys in suffix order
+            print(B.key, end=' ')
+            depthTAB2(B.sibling)
+# adding intermediate if not so simple...
+    
+'''
+Breadth traversals
+'''
+
+def breadth(T):
+    q = Queue()
+    queue.enqueue(T, q)
+    while not queue.isEmpty(q):
+        T = queue.dequeue(q)
+        print(T.key, end=' ')
+        for child in T.children:
+            queue.enqueue(child, q)
+
+def breadthTAB(B):
+    q = Queue()
+    queue.enqueue(B, q)
+    while not queue.isEmpty(q):
+        B = queue.dequeue(q)
+        print(B.key, end=' ')
+        child = B.child
+        while child:
+            queue.enqueue(child, q)
+            child = child.sibling
+
+def breadthLevels(T):
+    """
+    displays one line by level: with 2 queues
+    """
+    q = Queue()
+    q2 = Queue()
+    queue.enqueue(T, q)
+    while not queue.isEmpty(q):
+        T = queue.dequeue(q)
+        print(T.key, end=' ')
+        for child in T.children:
+            queue.enqueue(child, q2)
+        if queue.isEmpty(q):
+            print()
+            (q, q2) = (q2, q)
+
+def breadthLevelsTAB(B):
+    """
+    BFS with "binary" implementation
+    displays one line by level: using level change marks
+    """
+    q = Queue()
+    queue.enqueue(B, q)
+    queue.enqueue(None, q)
+    while not queue.isEmpty(q):
+        B = queue.dequeue(q)
+        if B == None:
+            print()
+            if not queue.isEmpty(q):
+                queue.enqueue(None, q)
+        else:
+            print(B.key, end=' ')
+            child = B.child
+            while child:
+                queue.enqueue(child, q)
+                child = child.sibling
+
+def traversalsTest(T, B):
+    print("DFS (Depth First Search)")
+    print("------------------------")
+    print("with classic representation:")
+    depthFull(T)
+    print()
+    print("with binary representation:")    
+    depthFullTAB(B)
+    print()
+    print()
+    print("BFS (Breadth First Search)")
+    print("--------------------------")
+    print("with classic representation:")
+    breadthLevels(T)
+    print("with binary representation:")    
+    breadthLevelsTAB(B)

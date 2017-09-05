@@ -1,0 +1,101 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Oct  5 17:15:39 2016
+
+@author: Nathalie
+"""
+
+class BTree:
+    degree = None
+    
+    def __init__(self, keys=None, children=None):
+        self.keys = keys if keys else []
+        self.children = children if children else []
+
+    @property
+    def nbKeys(self):
+        return len(self.keys)
+
+
+
+#to build examples
+def __fromList(s, i=0): 
+    if i < len(s) and s[i] == '(':   # can this test be removed?
+        i = i + 2 # to pass the '(<'
+        B = BTree()
+        while s[i] != '>':
+            key = ""            
+            while not(s[i] in ',>'):
+                key += s[i]
+                i += 1
+            B.keys.append(int(key))
+            if s[i] == ',':
+                i += 1 
+        i += 1  # to pass the '>'
+        B.children = []
+        while s[i] != ')':
+            (C, i) = __fromList(s, i)
+            B.children.append(C)
+        i = i + 1   # to pass the ')'
+        return (B, i)
+    else:
+        return None
+
+def fromList(s, d):
+    BTree.degree = d
+    (B, _) = __fromList(s)
+    return B
+
+def __values(B, L):
+    if B.children == []:
+        for i in range(B.nbKeys):   # L += B.keys
+            L.append(B.keys[i])
+    else:
+        for i in range(B.nbKeys):
+            __values(B.children[i], L)
+            L.append(B.keys[i])
+        __values(B.children[B.nbKeys], L)
+
+def values(B):
+    L = []
+    if B:
+        __values(B, L)
+    return L
+
+# B-tree -> liner rep.
+def __toList(B):
+    s = '(<' 
+    for i in range(B.nbKeys-1):
+        s += str(B.keys[i]) + ','
+    s += str(B.keys[B.nbKeys-1]) + '>'
+    for child in B.children:
+        s += __toList(child)
+    s += ')'
+    return s
+
+def toList(B):
+    if B:
+        return __toList(B)
+
+
+# test order in B-tree (works only with numeric keys)
+
+def __isBtree(B, inf, sup):
+    if B.keys[0] < inf or B.keys[B.nbKeys-1] > sup:
+        return False
+    else:
+        for i in range(B.nbKeys-1):
+            if B.keys[i] >= B.keys[i+1]:
+                return False
+        if B.children:
+            for i in range(B.nbKeys):
+                if not __isBtree(B.children[i], inf, B.keys[i]):
+                    return False
+                inf = B.keys[i]
+            return __isBtree(B.children[B.nbKeys], inf, sup)
+        else:
+            return True
+
+def isBtree(B):
+    return B == None or __isBtree(B, -float('inf'), float('inf'))
+    

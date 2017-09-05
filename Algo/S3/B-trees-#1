@@ -1,0 +1,119 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Oct  5 16:48:50 2016
+@author: Nathalie
+"""
+
+from AlgoPy import bTree
+from AlgoPy.bTree import BTree
+
+
+
+# list of keys in order
+
+def __BtreeValues(B, L):
+    if B.children == []:
+        for i in range(B.nbKeys):   # L += B.keys
+            L.append(B.keys[i])
+    else:
+        for i in range(B.nbKeys):
+            __BtreeValues(B.children[i], L)
+            L.append(B.keys[i])
+        __BtreeValues(B.children[B.nbKeys], L)
+
+def BtreeValues(B):
+    L = []
+    if B:
+        __BtreeValues(B, L)
+    return L
+
+# B-tree -> liner rep.
+def __BtreeToList(B):
+    s = '(<' 
+    for i in range(B.nbKeys-1):
+        s += str(B.keys[i]) + ','
+    s += str(B.keys[B.nbKeys-1]) + '>'
+    for child in B.children:
+        s += __BtreeToList(child)
+    s += ')'
+    return s
+
+def BtreeToList(B):
+    if B:
+        return __BtreeToList(B)
+
+# linear rep -> B-tree
+
+def __fromList(s, i=0): 
+    if i < len(s) and s[i] == '(':   # can this test be removed?
+        i = i + 2 # to pass the '(<'
+        B = BTree()
+        while s[i] != '>':
+            key = ""            
+            while not(s[i] in ',>'):
+                key += s[i]
+                i += 1
+            B.keys.append(int(key))
+            if s[i] == ',':
+                i += 1 
+        i += 1  # to pass the '>'
+        B.children = []
+        while s[i] != ')':
+            (C, i) = __fromList(s, i)
+            B.children.append(C)
+        i = i + 1   # to pass the ')'
+        return (B, i)
+    else:
+        return None
+
+def fromList(s, d):
+    BTree.degree = d
+    (B, _) = __fromList(s)
+    return B
+
+# examples
+
+# first in tutorial, degree = 3
+s0 = "(<20>(<8,15>(<1,2,3,4,5>)(<9,13>)(<16,17,18,19>))(<26,42,53>(<21,25>)(<27,34,35,41>)(<43,48,51,52>)(<62,65,77>)))"
+B0 = fromList(s0, 3)
+
+# second in tutorial, ex 1.4 q1 degree = 2
+s2 = "(<22>(<15>(<8,12>)(<18,19,20>))(<27,41>(<24,25>)(<30,35,38>)(<45,48>)))"
+B2 = fromList(s2, 2)
+
+# ex 1.4 q2, degree = 2
+s1 = "(<13,32,44>(<3>)(<18,25>)(<35,40>)(<46,49,50>))"
+B1 = fromList(s1, 2)
+
+# test B-tree <-> linear rep.
+def test(s, d):
+    B = fromList(s, d)
+    return BtreeToList(B) == s
+
+
+
+# test order in B-tree (works only with numeric keys)
+
+def __isBtree(B, inf, sup):
+    if B.keys[0] < inf or B.keys[B.nbKeys-1] > sup:
+        return False
+    else:
+        for i in range(B.nbKeys-1):
+            if B.keys[i] >= B.keys[i+1]:
+                return False
+        if B.children:
+            for i in range(B.nbKeys):
+                if not __isBtree(B.children[i], inf, B.keys[i]):
+                    return False
+                inf = B.keys[i]
+            return __isBtree(B.children[B.nbKeys], inf, sup)
+        else:
+            return True
+
+def isBtree(B):
+    return B == None or __isBtree(B, -float('inf'), float('inf'))
+    
+notAbTree1 = "(<22>(<15>(<8,12>)(<18,19,23>))(<27,41>(<24,25>)(<26,35,38>)(<45,48>)))"
+notabTree2 = "(<22>(<15>(<8,12>)(<18,19,20>))(<27,41>(<24,25>)(<30,35,38>)))"
+
+        
