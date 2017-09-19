@@ -30,7 +30,7 @@
   - [ ] Math
   - [ ] Algo
   - [x] Archi
-  - [ ] Phy
+  - [X] Phy
   - [ ] Elec
 
 # S2
