@@ -1,4 +1,4 @@
-# EPITA computer architecture courses
+  # EPITA computer architecture courses
 
 - S1
   - [examinations](https://github.com/BUYMERCIER/computer-architecture-courses/tree/master/S1/examinations)
@@ -20,8 +20,29 @@
   - [S2](http://buymercier.free.fr/epita/finals_math/2016.pdf)
 
 
-# Seminar 
+# Seminar
 
 [Full course in French](https://www.lrde.epita.fr/~akim/thlr/lecture-notes/theorie-des-langages-rationnels.pdf)
 
+***
 
+# S1
+  - [ ] Math
+  - [ ] Algo
+  - [x] Archi
+  - [ ] Phy
+  - [ ] Elec
+
+# S2
+  - [ ] Math
+  - [x] Algo
+  - [x] Archi
+  - [ ] Phy
+  - [ ] Elec
+
+# S3
+  - [x] Math
+  - [x] Algo
+  - [x] Archi
+  - [ ] Phy
+  - [ ] Elec
