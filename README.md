@@ -30,19 +30,26 @@
   - [ ] Math
   - [ ] Algo
   - [x] Archi
-  - [X] Phy
+  - [x] Phy
   - [ ] Elec
 
 # S2
-  - [ ] Math
+  - [x] Math
   - [x] Algo
   - [x] Archi
   - [ ] Phy
   - [ ] Elec
 
 # S3
-  - [x] Math
+  - [ ] Math
   - [x] Algo
   - [x] Archi
   - [ ] Phy
   - [ ] Elec
+
+***
+
+# Useful Links
+
+- [Algo, la page (Algo TD)](https://algo-td.infoprepa.epita.fr/)
+- Algo EPITA, Classes Prepa : [FR](algo.infoprepa.epita.fr/), [EN](https://algo.infoprepa.epita.fr//english/)
