@@ -53,3 +53,5 @@
 
 - [Algo, la page (Algo TD)](https://algo-td.infoprepa.epita.fr/)
 - Algo EPITA, Classes Prepa : [FR](https://algo.infoprepa.epita.fr/), [EN](https://algo.infoprepa.epita.fr//english/)
+- [LSE algo thingy](https://wiki-prog.infoprepa.epita.fr/index.php/EPITA:Programmation#Lectures)
+
