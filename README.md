@@ -1,3 +1,9 @@
+# Files format
+
+  (First 3 letters of the class name)-Semester-(Type of the file)-(Name)-etc
+
+  Example: *Phy-S3-TD-Electrostatics-1.pdf*
+
 # EPITA Mathematics full course (S1 - S2)
 - [pdf file](http://buymercier.free.fr/mathcourse.pdf)
 - Examinations
@@ -39,4 +45,3 @@
 - [Algo, la page (Algo TD)](https://algo-td.infoprepa.epita.fr/)
 - Algo EPITA, Classes Prepa : [FR](https://algo.infoprepa.epita.fr/), [EN](https://algo.infoprepa.epita.fr//english/)
 - [LSE algo thingy](https://wiki-prog.infoprepa.epita.fr/index.php/EPITA:Programmation#Lectures)
-
