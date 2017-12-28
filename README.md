@@ -11,14 +11,14 @@
   - [S2](http://buymercier.free.fr/epita/finals_math/2016.pdf)
 
 
-# Seminar
+# Seminar THLR
 
 [Full course in French](https://www.lrde.epita.fr/~akim/thlr/lecture-notes/theorie-des-langages-rationnels.pdf)
 
 ***
 
 # S1
-  - [ ] Math
+  - [X] Math
   - [ ] Algo
   - [x] Archi
   - [x] Phy
@@ -45,3 +45,7 @@
 - [Algo, la page (Algo TD)](https://algo-td.infoprepa.epita.fr/)
 - Algo EPITA, Classes Prepa : [FR](https://algo.infoprepa.epita.fr/), [EN](https://algo.infoprepa.epita.fr//english/)
 - [Wiki prog](https://wiki-prog.infoprepa.epita.fr/index.php/EPITA:Programmation#Lectures)
+
+# Want to contribute?
+
+Contact me at corentin@mercier.link
