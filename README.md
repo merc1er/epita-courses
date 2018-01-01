@@ -36,7 +36,7 @@
   - [x] Algo
   - [x] Archi
   - [ ] Phy
-  - [ ] Elec
+  - [x] Elec
 
 ***
 
