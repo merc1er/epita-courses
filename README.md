@@ -1,8 +1,8 @@
-# Files format
+# File Format
 
-  (First 3 letters of the class name)-Semester-(Type of the file)-(Name)-etc
+(First 3 letters of the class name)-Semester-(Type of file)-(Name)-etc
 
-  Example: *Phy-S3-TD-Electrostatics-1.pdf*
+Example: *Phy-S3-TD-Electrostatics-1.pdf*
 
 # EPITA Mathematics full course (S1 - S2)
 - [pdf file](http://buymercier.free.fr/mathcourse.pdf)
